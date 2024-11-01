@@ -484,7 +484,7 @@ function renderProjects(projectsData) {
         detailsSection.appendChild(linksContainer);
       }
     }
-    
+
     projectContent.appendChild(imageSection);
     projectContent.appendChild(detailsSection);
     projectItem.appendChild(projectContent);
@@ -500,6 +500,29 @@ function renderProjects(projectsData) {
     indicator.setAttribute("aria-label", `Slide ${index + 1}`);
 
     indicatorsContainer.appendChild(indicator);
+  });
+
+  handleProjectLinks();
+}
+
+function handleProjectLinks() {
+  const projectLinks = document.querySelectorAll('.project-links a');
+  
+  projectLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const targetSection = document.querySelector(href);
+        
+        if (targetSection) {
+          targetSection.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      }
+    });
   });
 }
 
