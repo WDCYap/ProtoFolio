@@ -1,4 +1,4 @@
-# ProtoFolio
+# PROTO//FOLIO
 
 A modern, responsive portfolio website built with HTML, CSS, and vanilla JavaScript.
 
