@@ -1,0 +1,130 @@
+{
+  "site": {
+    "title": "PROTO//FOLIO",
+    "brand": "PROTO//FOLIO",
+    "favicon": "assets/img/favicon.ico"
+  },
+  "about": {
+    "title": "Hello, this is ProtoFolio",
+    "description": [
+      "A modern, responsive portfolio website built with HTML, CSS, and vanilla JavaScript.",
+      "It is a simple and easy to use template."
+    ],
+    "image": {
+      "light": "assets/img/picture.jpg",
+      "dark": "assets/img/picture-dark.jpg"
+    },
+    "titles": ["Clean Layout", "Responsive Design"]
+  },
+  "education": {
+    "title": "Education",
+    "items": [
+      {
+        "title": "Sample College Degree",
+        "institution": "Sample College Institution",
+        "date": "2020-2024",
+        "description": ["Sample Description 1", "Sample Description 2"]
+      },
+      {
+        "title": "Sample Highschool Degree",
+        "institution": "Sample Highschool Institution",
+        "date": "2018-2020",
+        "description": ["Sample Description 1", "Sample Description 2"]
+      }
+    ]
+  },
+  "experience": {
+    "title": "Experience",
+    "items": [
+      {
+        "title": "Sample Job Title",
+        "company": "Sample Company",
+        "date": "Month-Month 2024",
+        "description": [
+          "Sample Description 1",
+          "Sample Description 2",
+          "Sample Description 3"
+        ]
+      }
+    ]
+  },
+  "skills": {
+    "title": "Skills",
+    "technicalSkills": [
+      "Sample Technical Skill 1",
+      "Sample Technical Skill 2",
+      "Sample Technical Skill 3",
+      "Sample Technical Skill 4",
+      "Sample Technical Skill 5",
+      "Sample Technical Skill 6",
+      "Sample Technical Skill 7"
+    ],
+    "softSkills": [
+      "Sample Soft Skill 1",
+      "Sample Soft Skill 2",
+      "Sample Soft Skill 3",
+      "Sample Soft Skill 4"
+    ]
+  },
+  "projects": {
+    "title": "Projects",
+    "items": [
+      {
+        "title": "Sample Project 1",
+        "description": ["Sample Description 1", "Sample Description 2"],
+        "image": "assets/img/project1.jpg",
+        "tools": [
+          "Sample Tool 1",
+          "Sample Tool 2",
+          "Sample Tool 3",
+          "Sample Tool 4",
+          "Sample Tool 5"
+        ],
+        "links": [
+          {
+            "url": "https://github.com/username/sampleproject1",
+            "text": "View Source",
+            "show": true
+          },
+          {
+            "url": "https://sampleproject1.example.com",
+            "text": "Live Demo",
+            "show": true
+          }
+        ]
+      },
+      {
+        "title": "Sample Project 2",
+        "description": ["Sample Description 1", "Sample Description 2"],
+        "image": "assets/img/project2.jpg",
+        "tools": [
+          "Sample Tool 1",
+          "Sample Tool 2",
+          "Sample Tool 3",
+          "Sample Tool 4"
+        ],
+        "links": [
+          {
+            "url": "https://github.com/username/sampleproject2",
+            "text": "View Source",
+            "show": true
+          },
+          {
+            "url": "https://sampleproject2.example.com",
+            "text": "Live Demo",
+            "show": true
+          }
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "email": "name@email.com",
+    "phone": "+123 456 7890",
+    "linkedin": "https://www.linkedin.com/in/sample-linkedin-profile/",
+    "resume": {
+      "show": true,
+      "file": "assets/resume.pdf"
+    }
+  }
+}
