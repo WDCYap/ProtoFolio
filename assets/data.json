@@ -71,6 +71,7 @@
     "items": [
       {
         "title": "Sample Project 1",
+        "show": false,
         "description": ["Sample Description 1", "Sample Description 2"],
         "image": "assets/img/project1.jpg",
         "tools": [
@@ -95,6 +96,7 @@
       },
       {
         "title": "Sample Project 2",
+        "show": true,
         "description": ["Sample Description 1", "Sample Description 2"],
         "image": "assets/img/project2.jpg",
         "tools": [
