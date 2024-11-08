@@ -1,15 +1,18 @@
 # PROTO//FOLIO
 
-A modern, responsive portfolio website template built with HTML, CSS, and vanilla JavaScript. All content is rendered from a single JSON file, making it easy to customize without touching the code.
+A modern, responsive portfolio website template built with HTML, CSS, and vanilla JavaScript. All content is rendered dynamically from a single JSON file, making it easy to customize without touching the code.
 
 ## Features
 
-- 🌓 Dark/Light mode with system preference
-- 📱 Fully responsive design
-- 💾 Single JSON file configuration
-- 📑 PDF viewer integration
-- 🎠 Project showcase
-- 📋 Multiple section layouts
+- 🌓 Dark/Light mode with system preference detection and persistence
+- 📱 Fully responsive design with mobile-first approach
+- 💾 Single JSON file configuration for easy content management
+- 📑 PDF viewer integration with download option
+- 📋 Multiple section layouts (Split, Timeline, Carousel, List)
+- 🔄 Dynamic CSS/JS loading for better performance
+- 🎨 Custom section styling support
+- ⚡ Smooth animations and transitions
+- 🔍 Section-specific JavaScript overrides
 
 ## Quick Start
 
@@ -24,38 +27,36 @@ A modern, responsive portfolio website template built with HTML, CSS, and vanill
 ```
 proto-folio/
 ├── assets/
-│   ├── data.json     # Main configuration file
-│   ├── resume.pdf    # Optional resume file
-│   └── img/          # Image directory
+│   ├── data.json       # Main configuration file
+│   ├── resume.pdf      # Optional resume file
+│   └── img/            # Image directory
 ├── css/
-│   └── styles.css    # Styling file
+│   ├── main.css        # Core styles
+│   ├── layouts/        # Layout-specific styles
+│   └── sections/       # Section-specific styles (optional)
 ├── js/
-│   └── main.js       # Main JavaScript file
-└── index.html        # Main HTML file
+│   ├── main.js         # Core JavaScript
+│   ├── layouts/        # Layout modules
+│   ├── sections/       # Section-specific modules (optional)
+│   └── utils/          # Utility modules
+└── index.html          # Main HTML file
 ```
 
-## Customization
-
-### Basic Structure
-
-The data.json file contains two main objects:
-
-1. site: Global configurations
-2. sections: Content sections
+## Configuration Guide
 
 ### Site Configuration
+
+The `site` object in data.json controls global settings:
 
 ```jsonc
 {
   "site": {
-    "title": "Your Site Title",
-    "brand": "YOUR//BRAND", // Also used in loading screen
-    "favicon": "path/to/favicon.ico",
+    "title": "Your Site Title", // Browser tab title
+    "brand": "YOUR//BRAND", // Navbar and loading screen text
+    "favicon": "path/to/favicon.ico", // Site favicon
     "footer": {
-      "show": true,
-      "content": "Your Footer Text",
-      "class": "text-center py-4",
-      "textClass": "text"
+      "show": true, // Show/hide footer
+      "text": "Your Footer Text" // Footer content
     }
   }
 }
@@ -63,101 +64,62 @@ The data.json file contains two main objects:
 
 ### Section Configuration
 
-Each section requires:
-
-- `id`: Unique identifier
-- `show`: Visibility toggle
-- `navOption`: Navigation menu toggle
-- `navText`: Custom navigation text (optional)
-- `layout`: Content structure type
-- `title`: Section heading (optional)
+Each section in the `sections` array requires:
 
 ```jsonc
 {
-  "id": "newSection",
-  "show": true,
-  "navOption": true,
-  "navText": "Nav Title", // Optional, defaults to title or capitalized ID
-  "title": "Section Title",
-  "layout": "split",
-  "content": []
+  "id": "about", // Unique identifier
+  "show": true, // Show/hide section
+  "nav": true, // Include in navigation
+  "title": "About Me", // Section heading (optional)
+  "layout": "split" // Layout type
+  // Layout-specific content...
 }
 ```
 
-### Layout Types
+### Available Layouts
 
-1. **Split Layout** - Two-column content
-2. **Timeline Layout** - Date-based vertical timeline
-3. **Carousel Layout** - Project showcase with images
-4. **List Layout** - Contact information and links
+#### 1. Split Layout (`split`)
 
-See [examples](#layout-examples) below.
-
-### Special Features
-
-1. **Theme Support**
+Two-column layout for about sections or skill displays:
 
 ```jsonc
 {
-  "type": "img",
-  "class": "profile-image",
-  "data": {
-    "light": "assets/img/picture.jpg",
-    "dark": "assets/img/picture-dark.jpg"
+  "id": "about",
+  "layout": "split",
+  "left": {
+    "heading": "Hello!",
+    "typingText": ["Developer", "Designer"], // Animated typing
+    "description": ["Your description here"]
+  },
+  "right": {
+    "image": {
+      "light": "assets/img/light.jpg", // Theme-aware images
+      "dark": "assets/img/dark.jpg"
+    }
   }
 }
 ```
 
-2. **Typing Animation**
-
-```jsonc
-{
-  "type": "div",
-  "id": "typed-text",
-  "class": "h4 mb-4",
-  "data": ["First text", "Second text"]
-}
-```
-
-3. **Styling**
-
-- Supports Bootstrap classes
-- Font Awesome 6 icons
-
-```jsonc
-{
-  "type": "link",
-  "icon": "fas fa-envelope",
-  "class": "d-flex align-items-center"
-}
-```
-
-### Layout Examples
-
-<details>
-<summary>Click to view layout examples</summary>
-
-1. **Split Layout**
+Alternative split layout for skills:
 
 ```jsonc
 {
   "layout": "split",
-  "content": [
-    {
-      "type": "div",
-      "class": "col-lg-6",
-      "items": [
-        {
-          "type": "h1",
-          "content": "Your Heading"
-        }
-      ]
-    }
-  ]
+  "left": {
+    "heading": "Technical Skills",
+    "items": ["JavaScript", "React", "Node.js"] // Skill tags
+  },
+  "right": {
+    "heading": "Soft Skills",
+    "items": ["Leadership", "Communication"]
+  }
 }
 ```
 
-2. **Timeline Layout**
+#### 2. Timeline Layout (`timeline`)
+
+Vertical timeline for experience or education:
 
 ```jsonc
 {
@@ -165,15 +127,17 @@ See [examples](#layout-examples) below.
   "items": [
     {
       "title": "Position Title",
-      "subtitle": "Company Name",
-      "date": "2020-2024",
-      "description": ["Description point 1"]
+      "subtitle": "Company/Institution",
+      "date": "2020 - Present",
+      "details": ["Achievement 1", "Achievement 2"]
     }
   ]
 }
 ```
 
-3. **Carousel Layout**
+#### 3. Carousel Layout (`carousel`)
+
+Project showcase with images and details:
 
 ```jsonc
 {
@@ -182,9 +146,10 @@ See [examples](#layout-examples) below.
     {
       "show": true,
       "title": "Project Name",
+      "subtitle": "Project Type",
       "image": "assets/img/project.jpg",
-      "description": ["Project description"],
-      "tools": ["Tool 1"],
+      "details": ["Project description"],
+      "tags": ["React", "Node.js"],
       "links": [
         {
           "url": "https://github.com/...",
@@ -197,74 +162,173 @@ See [examples](#layout-examples) below.
 }
 ```
 
-4. **List Layout**
+#### 4. List Layout (`list`)
+
+Contact information and links:
 
 ```jsonc
 {
   "layout": "list",
   "items": [
     {
-      "type": "link",
-      "icon": "fas fa-envelope",
-      "content": "email@example.com",
-      "href": "mailto:email@example.com",
+      "type": "email", // Determines icon
+      "text": "Email Me", // Display text
+      "value": "me@email.com", // Link value
+      "show": true
+    },
+    {
+      "type": "resume", // Special type for resume modal
+      "text": "View Resume",
+      "value": "assets/resume.pdf",
       "show": true
     }
   ]
 }
 ```
 
-</details>
+### Custom Sections & Layouts
 
-### Customization Tips
+#### Creating a Custom Section
 
-1. **Adding a New Section**
+When you want to override a layout's default behavior for a specific section:
 
-   - Copy an existing section structure
-   - Change the ID and other properties
-   - Choose an appropriate layout
-   - Add your content
+```javascript
+// js/sections/customSection.js
+export default async function createCustomSection(data) {
+  // You can still use the default layout as base
+  const layoutModule = await import("../layouts/split.js");
+  const content = layoutModule.default(data);
 
-2. **Mobile Optimization**
+  // Add custom elements or modify the content
+  const customElement = document.createElement("div");
+  customElement.className = "custom-element";
+  customElement.textContent = "Custom content";
 
-   - Use Bootstrap's responsive classes (col-lg-6, col-md-12, etc.)
-   - Images automatically resize for mobile
-   - Navigation collapses into hamburger menu
+  content.appendChild(customElement);
+  return content;
+}
+```
 
-3. **Animations**
-   - Sections fade in on scroll
-   - Profile image has fade-in animation
-   - Skills tags have staggered animation
-   - Typing animation speed can be adjusted in the code
+```css
+/* css/sections/customSection.css */
+.custom-element {
+  padding: 1rem;
+  background: var(--card-bg);
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+```
 
-### Troubleshooting
+#### Creating a Custom Layout
 
-1. **Images Not Loading**
+When you want to create a reusable layout pattern:
 
-   - Ensure image paths in data.json are correct
-   - Check that both light/dark versions exist for profile image
-   - Verify image formats are supported (jpg, png, etc.)
+```javascript
+// js/layouts/custom.js
+export default function createCustomLayout(data) {
+  const container = document.createElement("div");
+  container.className = `custom-layout ${data.id}-layout`;
 
-2. **Resume Not Working**
+  // Create content based on data structure
+  data.items.forEach((item) => {
+    const card = document.createElement("div");
+    card.className = "custom-card";
 
-   - Verify resume.pdf exists in assets folder
-   - Check file permissions
-   - Ensure PDF is web-compatible
+    const title = document.createElement("h3");
+    title.textContent = item.title;
 
-3. **Navigation Issues**
-   - Verify section IDs match navigation links
-   - Check navOption and show properties
-   - Ensure unique IDs for each section
+    const content = document.createElement("p");
+    content.textContent = item.content;
+
+    card.append(title, content);
+    container.appendChild(card);
+  });
+
+  return container;
+}
+```
+
+```css
+/* css/layouts/custom.css */
+.custom-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.custom-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+}
+```
+
+Usage in data.json:
+
+```jsonc
+{
+  "id": "customSection",
+  "show": true,
+  "nav": true,
+  "layout": "custom",
+  "items": [
+    {
+      "title": "Card Title",
+      "content": "Card content goes here"
+    }
+  ]
+}
+```
+
+### Advanced Customization
+
+#### Theme Support
+
+Add theme-specific assets in your data:
+
+```jsonc
+{
+  "image": {
+    "light": "assets/img/light-version.jpg",
+    "dark": "assets/img/dark-version.jpg"
+  }
+}
+```
+
+#### Animation System
+
+Built-in animations include:
+
+- Typing effect for text (`typingText` in split layout)
+- Fade-in for sections (automatic)
+- Slide effects for timeline items
+- Staggered animations for lists and skills
+- Theme transition effects
+- Image swap animations
+
+#### Performance Features
+
+- Dynamic CSS/JS loading
+- Layout-specific code splitting
+- Lazy loading of assets
 
 ## Dependencies
 
-- Bootstrap 5.3.2
+- Bootstrap 5.3.2 (CSS & JS)
 - Font Awesome 6.0.0
 - Google Fonts (Space Mono)
 
 ## Browser Support
 
-Modern browsers (Chrome, Firefox, Safari, Edge)
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Responsive design support
+- System theme detection
 
 ## License
 
