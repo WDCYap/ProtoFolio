@@ -2,131 +2,239 @@
   "site": {
     "title": "PROTO//FOLIO",
     "brand": "PROTO//FOLIO",
-    "favicon": "assets/img/favicon.ico"
-  },
-  "about": {
-    "title": "Hello, this is ProtoFolio",
-    "description": [
-      "A modern, responsive portfolio website built with HTML, CSS, and vanilla JavaScript.",
-      "It is a simple and easy to use template."
-    ],
-    "image": {
-      "light": "assets/img/picture.jpg",
-      "dark": "assets/img/picture-dark.jpg"
-    },
-    "titles": ["Clean Layout", "Responsive Design"]
-  },
-  "education": {
-    "title": "Education",
-    "items": [
-      {
-        "title": "Sample College Degree",
-        "institution": "Sample College Institution",
-        "date": "2020-2024",
-        "description": ["Sample Description 1", "Sample Description 2"]
-      },
-      {
-        "title": "Sample Highschool Degree",
-        "institution": "Sample Highschool Institution",
-        "date": "2018-2020",
-        "description": ["Sample Description 1", "Sample Description 2"]
-      }
-    ]
-  },
-  "experience": {
-    "title": "Experience",
-    "items": [
-      {
-        "title": "Sample Job Title",
-        "company": "Sample Company",
-        "date": "Month-Month 2024",
-        "description": [
-          "Sample Description 1",
-          "Sample Description 2",
-          "Sample Description 3"
-        ]
-      }
-    ]
-  },
-  "skills": {
-    "title": "Skills",
-    "technicalSkills": [
-      "Sample Technical Skill 1",
-      "Sample Technical Skill 2",
-      "Sample Technical Skill 3",
-      "Sample Technical Skill 4",
-      "Sample Technical Skill 5",
-      "Sample Technical Skill 6",
-      "Sample Technical Skill 7"
-    ],
-    "softSkills": [
-      "Sample Soft Skill 1",
-      "Sample Soft Skill 2",
-      "Sample Soft Skill 3",
-      "Sample Soft Skill 4"
-    ]
-  },
-  "projects": {
-    "title": "Projects",
-    "items": [
-      {
-        "title": "Sample Project 1",
-        "show": false,
-        "description": ["Sample Description 1", "Sample Description 2"],
-        "image": "assets/img/project1.jpg",
-        "tools": [
-          "Sample Tool 1",
-          "Sample Tool 2",
-          "Sample Tool 3",
-          "Sample Tool 4",
-          "Sample Tool 5"
-        ],
-        "links": [
-          {
-            "url": "https://github.com/username/sampleproject1",
-            "text": "View Source",
-            "show": true
-          },
-          {
-            "url": "https://sampleproject1.example.com",
-            "text": "Live Demo",
-            "show": true
-          }
-        ]
-      },
-      {
-        "title": "Sample Project 2",
-        "show": true,
-        "description": ["Sample Description 1", "Sample Description 2"],
-        "image": "assets/img/project2.jpg",
-        "tools": [
-          "Sample Tool 1",
-          "Sample Tool 2",
-          "Sample Tool 3",
-          "Sample Tool 4"
-        ],
-        "links": [
-          {
-            "url": "https://github.com/username/sampleproject2",
-            "text": "View Source",
-            "show": true
-          },
-          {
-            "url": "https://sampleproject2.example.com",
-            "text": "Live Demo",
-            "show": true
-          }
-        ]
-      }
-    ]
-  },
-  "contact": {
-    "email": "name@email.com",
-    "phone": "+123 456 7890",
-    "linkedin": "https://www.linkedin.com/in/sample-linkedin-profile/",
-    "resume": {
+    "favicon": "assets/img/favicon.ico",
+    "footer": {
       "show": true,
-      "file": "assets/resume.pdf"
+      "content": "PROTO//FOLIO by William Yap",
+      "class": "text-center py-4",
+      "textClass": "text"
     }
-  }
+  },
+  "sections": [
+    {
+      "id": "about",
+      "show": true,
+      "navOption": true,
+      "navText": "About",
+      "layout": "split",
+      "content": [
+        {
+          "type": "div",
+          "class": "col-lg-6",
+          "items": [
+            {
+              "type": "h1",
+              "class": "display-4 mb-4",
+              "content": "Hello, this is ProtoFolio"
+            },
+            {
+              "type": "div",
+              "id": "typed-text",
+              "class": "h4 mb-4",
+              "data": ["Clean Layout", "Responsive Design"]
+            },
+            {
+              "type": "div",
+              "class": "lead",
+              "items": [
+                {
+                  "type": "p",
+                  "content": "A modern, responsive portfolio website built with HTML, CSS, and vanilla JavaScript."
+                },
+                {
+                  "type": "p",
+                  "content": "It is a simple and easy to use template."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "div",
+          "class": "col-lg-6",
+          "items": [
+            {
+              "type": "div",
+              "class": "about-image-container",
+              "items": [
+                {
+                  "type": "img",
+                  "class": "profile-image",
+                  "data": {
+                    "light": "assets/img/picture.jpg",
+                    "dark": "assets/img/picture-dark.jpg"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "show": true,
+      "navOption": true,
+      "title": "Education",
+      "layout": "timeline",
+      "items": [
+        {
+          "title": "Sample College Degree",
+          "subtitle": "Sample College Institution",
+          "date": "2020-2024",
+          "description": ["Sample Description 1", "Sample Description 2"]
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "show": true,
+      "navOption": true,
+      "title": "Experience",
+      "layout": "timeline",
+      "items": [
+        {
+          "title": "Sample Job Title",
+          "subtitle": "Sample Company",
+          "date": "Month-Month 2024",
+          "description": [
+            "Sample Description 1",
+            "Sample Description 2",
+            "Sample Description 3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skills",
+      "show": true,
+      "navOption": true,
+      "title": "Skills",
+      "layout": "split",
+      "content": [
+        {
+          "type": "div",
+          "class": "col-md-6",
+          "items": [
+            {
+              "type": "h4",
+              "content": "Technical Skills"
+            },
+            {
+              "type": "div",
+              "class": "d-flex flex-wrap",
+              "items": [
+                {
+                  "type": "span",
+                  "class": "skill-tag",
+                  "content": "Sample Technical Skill 1"
+                },
+                {
+                  "type": "span",
+                  "class": "skill-tag",
+                  "content": "Sample Technical Skill 2"
+                },
+                {
+                  "type": "span",
+                  "class": "skill-tag",
+                  "content": "Sample Technical Skill 3"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "div",
+          "class": "col-md-6",
+          "items": [
+            {
+              "type": "h4",
+              "content": "Soft Skills"
+            },
+            {
+              "type": "div",
+              "class": "d-flex flex-wrap",
+              "items": [
+                {
+                  "type": "span",
+                  "class": "skill-tag",
+                  "content": "Sample Soft Skill 1"
+                },
+                {
+                  "type": "span",
+                  "class": "skill-tag",
+                  "content": "Sample Soft Skill 2"
+                },
+                {
+                  "type": "span",
+                  "class": "skill-tag",
+                  "content": "Sample Soft Skill 3"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "show": true,
+      "navOption": true,
+      "title": "Projects",
+      "layout": "carousel",
+      "items": [
+        {
+          "show": true,
+          "title": "Sample Project",
+          "image": "assets/img/project1.jpg",
+          "description": ["Sample Description 1", "Sample Description 2"],
+          "tools": ["Sample Tool 1", "Sample Tool 2"],
+          "links": [
+            {
+              "url": "https://github.com/username/project",
+              "text": "View Source",
+              "show": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "show": true,
+      "navOption": true,
+      "title": "Contact",
+      "layout": "list",
+      "items": [
+        {
+          "type": "link",
+          "icon": "fas fa-envelope",
+          "content": "name@email.com",
+          "href": "mailto:name@email.com",
+          "show": true
+        },
+        {
+          "type": "link",
+          "icon": "fas fa-phone",
+          "content": "+123 456 7890",
+          "href": "tel:+123456789",
+          "show": true
+        },
+        {
+          "type": "link",
+          "icon": "fab fa-linkedin",
+          "content": "LinkedIn Profile",
+          "href": "https://linkedin.com/in/profile",
+          "show": true
+        },
+        {
+          "type": "resume",
+          "icon": "fas fa-file-pdf",
+          "content": "View Resume",
+          "file": "assets/resume.pdf",
+          "show": true
+        }
+      ]
+    }
+  ]
 }

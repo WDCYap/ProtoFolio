@@ -1,19 +1,27 @@
 function initializeTheme() {
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+  const savedTheme = localStorage.getItem("theme");
 
   function setTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
     updateThemeIcon(theme);
     updateProfileImage(theme);
   }
 
   function handleSystemThemeChange(e) {
-    const newTheme = e.matches ? "dark" : "light";
-    setTheme(newTheme);
+    if (!localStorage.getItem("theme")) {
+      const newTheme = e.matches ? "dark" : "light";
+      setTheme(newTheme);
+    }
   }
 
-  const theme = prefersDark.matches ? "dark" : "light";
-  setTheme(theme);
+  if (savedTheme) {
+    setTheme(savedTheme);
+  } else {
+    const theme = prefersDark.matches ? "dark" : "light";
+    setTheme(theme);
+  }
 
   prefersDark.addEventListener("change", handleSystemThemeChange);
 }
@@ -68,6 +76,12 @@ function showPage() {
   setTimeout(() => {
     loadingScreen.style.display = "none";
     startPageAnimations();
+
+    const typedTextElement = document.getElementById("typed-text");
+    if (typedTextElement && typedTextElement.dataset.texts) {
+      const texts = JSON.parse(typedTextElement.dataset.texts);
+      typeText(texts);
+    }
   }, 500);
 }
 
@@ -178,364 +192,164 @@ function typeText(texts) {
   type();
 }
 
-fetch("assets/data.json")
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  })
-  .then((data) => {
-    console.log("Fetched Data:", data);
+function renderContent(data) {
+  const sectionsContainer = document.getElementById("sections-container");
 
-    const sectionsContainer = document.getElementById("sections-container");
-
-    if (data.about) {
-      renderSection("about", data.about);
-    }
-    if (data.education) {
-      renderSection("education", data.education);
-    }
-    if (data.experience) {
-      renderSection("experience", data.experience);
-    }
-    if (data.skills) {
-      renderSection("skills", data.skills);
-    }
-    if (data.projects) {
-      renderProjects(data.projects);
-      document.getElementById("projects").style.display = "block";
-    }
-
-    if (data.contact) {
-      renderContact(data.contact);
-      document.getElementById("contact").style.display = "block";
-    }
-
-    if (data.site) {
-      if (data.site.title) {
-        document.getElementById("site-title").textContent = data.site.title;
-        document.title = data.site.title;
+  if (data.sections) {
+    data.sections.forEach((section) => {
+      if (section.show) {
+        const sectionElement = createSection(section);
+        sectionsContainer.appendChild(sectionElement);
       }
-      if (data.site.brand) {
-        document.querySelector(".navbar-brand").textContent = data.site.brand;
-      }
-      if (data.site.favicon) {
-        const favicon =
-          document.querySelector("link[rel='icon']") ||
-          document.createElement("link");
-        favicon.type = "image/x-icon";
-        favicon.rel = "icon";
-        favicon.href = data.site.favicon;
-        if (!document.querySelector("link[rel='icon']")) {
-          document.head.appendChild(favicon);
-        }
-      }
-    }
-  })
-  .catch((error) => {
-    console.error("Error fetching data:", error);
-  });
-
-function renderSection(id, sectionData) {
-  const section = document.createElement("section");
-  section.id = id;
-
-  if (id === "about") {
-    section.classList.add("visible");
+    });
   }
+}
+
+function createSection(sectionData) {
+  const section = document.createElement("section");
+  section.id = sectionData.id;
 
   const container = document.createElement("div");
   container.className = "container";
 
-  if (id === "about") {
-    const aboutContainer = document.createElement("div");
-    aboutContainer.className = "row align-items-center";
-
-    const aboutText = document.createElement("div");
-    aboutText.className = "col-lg-6";
-
-    const aboutTitle = document.createElement("h1");
-    aboutTitle.className = "display-4 mb-4";
-    aboutTitle.textContent = sectionData.title;
-
-    const aboutTypedText = document.createElement("div");
-    aboutTypedText.className = "h4 mb-4";
-    aboutTypedText.id = "typed-text";
-
-    const aboutDescription = document.createElement("div");
-    aboutDescription.className = "lead";
-    sectionData.description.forEach((desc) => {
-      const paragraph = document.createElement("p");
-      paragraph.textContent = desc;
-      aboutDescription.appendChild(paragraph);
-    });
-
-    aboutText.appendChild(aboutTitle);
-    aboutText.appendChild(aboutTypedText);
-    aboutText.appendChild(aboutDescription);
-
-    const aboutImage = document.createElement("div");
-    aboutImage.className = "col-lg-6";
-
-    const imageContainer = document.createElement("div");
-    imageContainer.className = "about-image-container";
-
-    const profileImage = document.createElement("img");
-    const currentTheme =
-      document.documentElement.getAttribute("data-theme") || "light";
-    profileImage.src = sectionData.image[currentTheme];
-    profileImage.alt = "Profile";
-    profileImage.className = "profile-image";
-
-    imageContainer.appendChild(profileImage);
-    aboutImage.appendChild(imageContainer);
-
-    aboutContainer.appendChild(aboutText);
-    aboutContainer.appendChild(aboutImage);
-    container.appendChild(aboutContainer);
-  } else if (id === "education" || id === "experience") {
-    const sectionTitle = document.createElement("h2");
-    sectionTitle.className = "section-title";
-    sectionTitle.textContent = sectionData.title;
-    container.appendChild(sectionTitle);
-
-    const timeline = document.createElement("div");
-    timeline.className = "timeline";
-
-    sectionData.items.forEach((item) => {
-      const timelineItem = document.createElement("div");
-      timelineItem.className = "timeline-item";
-
-      const itemTitle = document.createElement("h4");
-      itemTitle.textContent = item.title;
-
-      const itemPlace = document.createElement("p");
-      itemPlace.className = id === "education" ? "institution" : "company";
-      itemPlace.textContent =
-        item[id === "education" ? "institution" : "company"];
-
-      const itemDate = document.createElement("p");
-      itemDate.className = "date";
-      itemDate.textContent = item.date;
-
-      const itemDescription = document.createElement("div");
-      item.description.forEach((desc) => {
-        const paragraph = document.createElement("p");
-        paragraph.textContent = desc;
-        itemDescription.appendChild(paragraph);
-      });
-
-      timelineItem.appendChild(itemTitle);
-      timelineItem.appendChild(itemPlace);
-      timelineItem.appendChild(itemDate);
-      timelineItem.appendChild(itemDescription);
-      timeline.appendChild(timelineItem);
-    });
-
-    container.appendChild(timeline);
-  } else if (id === "skills") {
-    const skillsContainer = document.createElement("div");
-    skillsContainer.className = "row g-4";
-
-    const technicalSkills = document.createElement("div");
-    technicalSkills.className = "col-md-6";
-
-    const technicalSkillsTitle = document.createElement("h4");
-    technicalSkillsTitle.textContent = "Technical Skills";
-
-    const technicalSkillsTags = document.createElement("div");
-    technicalSkillsTags.className = "d-flex flex-wrap";
-
-    sectionData.technicalSkills.forEach((skill, index) => {
-      const skillTag = document.createElement("span");
-      skillTag.className = "skill-tag";
-      skillTag.style.setProperty("--index", index);
-      skillTag.textContent = skill;
-      technicalSkillsTags.appendChild(skillTag);
-    });
-
-    technicalSkills.appendChild(technicalSkillsTitle);
-    technicalSkills.appendChild(technicalSkillsTags);
-
-    const softSkills = document.createElement("div");
-    softSkills.className = "col-md-6";
-
-    const softSkillsTitle = document.createElement("h4");
-    softSkillsTitle.textContent = "Soft Skills";
-
-    const softSkillsTags = document.createElement("div");
-    softSkillsTags.className = "d-flex flex-wrap";
-
-    sectionData.softSkills.forEach((skill) => {
-      const skillTag = document.createElement("span");
-      skillTag.className = "skill-tag";
-      skillTag.textContent = skill;
-      softSkillsTags.appendChild(skillTag);
-    });
-
-    softSkills.appendChild(softSkillsTitle);
-    softSkills.appendChild(softSkillsTags);
-
-    skillsContainer.appendChild(technicalSkills);
-    skillsContainer.appendChild(softSkills);
-    container.appendChild(skillsContainer);
+  if (sectionData.title) {
+    const title = document.createElement("h2");
+    title.className = "section-title";
+    title.textContent = sectionData.title;
+    container.appendChild(title);
   }
 
+  const content = createSectionContent(sectionData);
+  container.appendChild(content);
   section.appendChild(container);
-  const sectionsContainer = document.getElementById("sections-container");
-  sectionsContainer.appendChild(section);
+
+  return section;
 }
 
-function renderContact(contactData) {
-  const contactEmailElement = document.getElementById("contact-email");
-  const contactPhoneElement = document.getElementById("contact-phone");
-  const contactLinkedInElement = document.getElementById("contact-linkedin");
-  const resumeButton = document.getElementById("resume-button");
-  const resumePreview = document.getElementById("resume-preview");
-  const resumeDownload = document.getElementById("resume-download");
-
-  if (contactData.email) {
-    contactEmailElement.textContent = contactData.email;
-    contactEmailElement.parentElement.href = `mailto:${contactData.email}`;
-  }
-
-  if (contactData.phone) {
-    contactPhoneElement.textContent = contactData.phone;
-    contactPhoneElement.parentElement.href = `tel:${contactData.phone}`;
-  }
-
-  if (contactData.linkedin) {
-    contactLinkedInElement.href = contactData.linkedin;
-  }
-
-  if (contactData.resume && contactData.resume.show) {
-    resumeButton.style.display = "flex";
-    resumePreview.src = contactData.resume.file;
-    resumeDownload.href = contactData.resume.file;
+function createSectionContent(sectionData) {
+  switch (sectionData.layout) {
+    case "split":
+      return createSplitLayout(sectionData.content);
+    case "timeline":
+      return createTimelineLayout(sectionData.items);
+    case "carousel":
+      return createCarouselLayout(sectionData.items);
+    case "list":
+      return createListLayout(sectionData.items);
+    default:
+      return createDefaultLayout(sectionData.items);
   }
 }
 
-function renderProjects(projectsData) {
-  const projectsContainer = document.getElementById("project-items");
-  const indicatorsContainer = document.getElementById("project-indicators");
+function createElement(elementData) {
+  if (!elementData.type) return null;
 
-  projectsContainer.innerHTML = "";
-  indicatorsContainer.innerHTML = "";
+  const element = document.createElement(elementData.type);
 
-  const visibleProjects = projectsData.items.filter(
-    (project) => project.show !== false
-  );
+  if (elementData.id) element.id = elementData.id;
+  if (elementData.class) element.className = elementData.class;
+  if (elementData.content) element.textContent = elementData.content;
+  if (elementData.href) element.href = elementData.href;
 
-  if (visibleProjects.length === 0) {
-    document.getElementById("projects").style.display = "none";
-    return;
+  if (elementData.data) {
+    if (elementData.type === "img") {
+      const theme =
+        document.documentElement.getAttribute("data-theme") || "light";
+      element.src = elementData.data[theme];
+      element.alt = "Profile";
+    }
+    if (elementData.id === "typed-text") {
+      element.dataset.texts = JSON.stringify(elementData.data);
+    }
   }
 
-  visibleProjects.forEach((project, index) => {
-    const projectItem = document.createElement("div");
-    projectItem.className = `carousel-item ${index === 0 ? "active" : ""}`;
-
-    const projectContent = document.createElement("div");
-    projectContent.className = "project-content";
-
-    const imageSection = document.createElement("div");
-    imageSection.className = "project-image";
-
-    const projectImage = document.createElement("img");
-    projectImage.src = project.image;
-    projectImage.alt = project.title;
-    imageSection.appendChild(projectImage);
-
-    const detailsSection = document.createElement("div");
-    detailsSection.className = "project-details";
-
-    const projectTitle = document.createElement("h3");
-    projectTitle.className = "mb-3";
-    projectTitle.textContent = project.title;
-
-    const projectDescription = document.createElement("div");
-    projectDescription.className = "mb-4";
-    project.description.forEach((desc) => {
-      const paragraph = document.createElement("p");
-      paragraph.textContent = desc;
-      projectDescription.appendChild(paragraph);
+  if (elementData.items) {
+    elementData.items.forEach((item) => {
+      const childElement = createElement(item);
+      if (childElement) element.appendChild(childElement);
     });
+  }
 
-    const toolsList = document.createElement("ul");
-    toolsList.className = "project-tools";
+  return element;
+}
 
-    project.tools.forEach((tool) => {
-      const toolItem = document.createElement("li");
-      toolItem.textContent = tool;
-      toolsList.appendChild(toolItem);
-    });
-
-    detailsSection.appendChild(projectTitle);
-    detailsSection.appendChild(projectDescription);
-    detailsSection.appendChild(toolsList);
-
-    if (project.links && project.links.length > 0) {
-      const linksContainer = document.createElement("div");
-      linksContainer.className = "project-links mt-3";
-
-      project.links.forEach((link) => {
-        if (link.show) {
-          const linkElement = document.createElement("a");
-          linkElement.href = link.url;
-          linkElement.className = "btn btn-primary me-2 mb-2";
-          linkElement.target = "_blank";
-          linkElement.rel = "noopener noreferrer";
-          linkElement.textContent = link.text;
-          linksContainer.appendChild(linkElement);
-        }
-      });
-
-      if (linksContainer.children.length > 0) {
-        detailsSection.appendChild(linksContainer);
-      }
+function updateSiteMetadata(siteData) {
+  if (siteData.title) {
+    document.getElementById("site-title").textContent = siteData.title;
+    document.title = siteData.title;
+  }
+  if (siteData.brand) {
+    document.querySelector(".navbar-brand").textContent = siteData.brand;
+  }
+  if (siteData.favicon) {
+    const favicon =
+      document.querySelector("link[rel='icon']") ||
+      document.createElement("link");
+    favicon.type = "image/x-icon";
+    favicon.rel = "icon";
+    favicon.href = siteData.favicon;
+    if (!document.querySelector("link[rel='icon']")) {
+      document.head.appendChild(favicon);
     }
-
-    projectContent.appendChild(imageSection);
-    projectContent.appendChild(detailsSection);
-    projectItem.appendChild(projectContent);
-    projectsContainer.appendChild(projectItem);
-
-    const indicator = document.createElement("button");
-    indicator.type = "button";
-    indicator.setAttribute("data-bs-target", "#projectCarousel");
-    indicator.setAttribute("data-bs-slide-to", index.toString());
-    if (index === 0) {
-      indicator.classList.add("active");
+  }
+  if (siteData.footer) {
+    const footer = document.querySelector("footer");
+    if (siteData.footer.show) {
+      footer.className = siteData.footer.class || "text-center py-4";
+      footer.innerHTML = "";
+      const small = document.createElement("small");
+      small.className = siteData.footer.textClass || "text";
+      small.textContent = siteData.footer.content;
+      footer.appendChild(small);
+    } else {
+      footer.style.display = "none";
     }
-    indicator.setAttribute("aria-label", `Slide ${index + 1}`);
+  }
+}
 
-    indicatorsContainer.appendChild(indicator);
+function updateNavigation(sections) {
+  const navList = document.querySelector(".navbar-nav");
+  const themeToggle = navList.querySelector(".nav-item");
+  navList.innerHTML = "";
+
+  sections.forEach((section) => {
+    if (section.show && section.navOption) {
+      const li = document.createElement("li");
+      li.className = "nav-item";
+
+      const a = document.createElement("a");
+      a.className = "nav-link";
+      a.href = `#${section.id}`;
+      a.textContent =
+        section.navText ||
+        section.title ||
+        section.id.charAt(0).toUpperCase() + section.id.slice(1);
+
+      li.appendChild(a);
+      navList.appendChild(li);
+    }
   });
 
-  handleProjectLinks();
+  navList.appendChild(themeToggle);
 }
 
-function handleProjectLinks() {
-  const projectLinks = document.querySelectorAll(".project-links a");
+fetch("assets/data.json")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log("Fetched Data:", data);
 
-  projectLinks.forEach((link) => {
-    link.addEventListener("click", (e) => {
-      const href = link.getAttribute("href");
+    if (data.site) {
+      updateSiteMetadata(data.site);
+    }
+    if (data.sections) {
+      updateNavigation(data.sections);
+    }
 
-      if (href.startsWith("#")) {
-        e.preventDefault();
-        const targetSection = document.querySelector(href);
-
-        if (targetSection) {
-          targetSection.scrollIntoView({
-            behavior: "smooth",
-          });
-        }
-      }
-    });
+    renderContent(data);
+  })
+  .catch((error) => {
+    console.error("Error fetching data:", error);
   });
-}
 
 function updateProfileImage(theme) {
   fetch("assets/data.json")
@@ -602,8 +416,255 @@ function handleSectionVisibility() {
   });
 }
 
+function createFooter() {
+  const footer = document.createElement("footer");
+  footer.className = "text-center py-4";
+
+  const small = document.createElement("small");
+  small.className = "text";
+  small.textContent = "PROTO//FOLIO by William Yap";
+
+  footer.appendChild(small);
+  document.body.appendChild(footer);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initializeTheme();
   initializeNavbarScroll();
   handleSectionVisibility();
+  createResumeModal();
+  createFooter();
 });
+
+function createSplitLayout(content) {
+  const row = document.createElement("div");
+  row.className = "row align-items-center";
+
+  content.forEach((column) => {
+    const columnElement = createElement(column);
+    if (columnElement) row.appendChild(columnElement);
+  });
+
+  return row;
+}
+
+function createTimelineLayout(items) {
+  const timeline = document.createElement("div");
+  timeline.className = "timeline";
+
+  items.forEach((item) => {
+    const timelineItem = document.createElement("div");
+    timelineItem.className = "timeline-item";
+
+    const title = document.createElement("h4");
+    title.textContent = item.title;
+
+    const subtitle = document.createElement("p");
+    subtitle.className = "institution";
+    subtitle.textContent = item.subtitle;
+
+    const date = document.createElement("p");
+    date.className = "date";
+    date.textContent = item.date;
+
+    const description = document.createElement("div");
+    item.description.forEach((text) => {
+      const p = document.createElement("p");
+      p.textContent = text;
+      description.appendChild(p);
+    });
+
+    timelineItem.append(title, subtitle, date, description);
+    timeline.appendChild(timelineItem);
+  });
+
+  return timeline;
+}
+
+function createCarouselLayout(items) {
+  const carousel = document.createElement("div");
+  carousel.className = "carousel slide";
+  carousel.id = "projectCarousel";
+  carousel.setAttribute("data-bs-ride", "carousel");
+
+  const indicators = document.createElement("div");
+  indicators.className = "carousel-indicators";
+
+  const inner = document.createElement("div");
+  inner.className = "carousel-inner";
+
+  const visibleItems = items.filter((item) => item.show);
+
+  visibleItems.forEach((item, index) => {
+    const indicator = document.createElement("button");
+    indicator.setAttribute("data-bs-target", "#projectCarousel");
+    indicator.setAttribute("data-bs-slide-to", index.toString());
+    if (index === 0) indicator.classList.add("active");
+    indicators.appendChild(indicator);
+
+    const carouselItem = document.createElement("div");
+    carouselItem.className = `carousel-item ${index === 0 ? "active" : ""}`;
+
+    const content = document.createElement("div");
+    content.className = "project-content";
+
+    const imageSection = document.createElement("div");
+    imageSection.className = "project-image";
+    const img = document.createElement("img");
+    img.src = item.image;
+    img.alt = item.title;
+    imageSection.appendChild(img);
+
+    const details = document.createElement("div");
+    details.className = "project-details";
+
+    const title = document.createElement("h3");
+    title.className = "mb-3";
+    title.textContent = item.title;
+
+    const description = document.createElement("div");
+    description.className = "mb-4";
+    item.description.forEach((text) => {
+      const p = document.createElement("p");
+      p.textContent = text;
+      description.appendChild(p);
+    });
+
+    const tools = document.createElement("ul");
+    tools.className = "project-tools";
+    item.tools.forEach((tool) => {
+      const li = document.createElement("li");
+      li.textContent = tool;
+      tools.appendChild(li);
+    });
+
+    details.append(title, description, tools);
+
+    if (item.links) {
+      const links = document.createElement("div");
+      links.className = "project-links mt-3";
+
+      item.links.forEach((link) => {
+        if (link.show) {
+          const a = document.createElement("a");
+          a.href = link.url;
+          a.className = "btn btn-primary me-2 mb-2";
+          a.textContent = link.text;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          links.appendChild(a);
+        }
+      });
+
+      details.appendChild(links);
+    }
+
+    content.append(imageSection, details);
+    carouselItem.appendChild(content);
+    inner.appendChild(carouselItem);
+  });
+
+  const controls = `
+    <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+  `;
+
+  carousel.append(indicators, inner);
+  carousel.insertAdjacentHTML("beforeend", controls);
+
+  return carousel;
+}
+
+function createListLayout(items) {
+  const list = document.createElement("div");
+  list.className = "row g-4";
+
+  const col = document.createElement("div");
+  col.className = "col-md-6";
+
+  items.forEach((item) => {
+    if (item.show) {
+      if (item.type === "resume") {
+        const link = document.createElement("a");
+        link.href = "#";
+        link.className = "contact-info";
+        link.setAttribute("data-bs-toggle", "modal");
+        link.setAttribute("data-bs-target", "#resumeModal");
+
+        const icon = document.createElement("i");
+        icon.className = item.icon;
+
+        const span = document.createElement("span");
+        span.textContent = item.content;
+
+        link.append(icon, span);
+
+        // Update modal
+        document.getElementById("resume-preview").src = item.file;
+        document.getElementById("resume-download").href = item.file;
+
+        col.appendChild(link);
+      } else {
+        const link = document.createElement("a");
+        link.href = item.href;
+        link.className = "contact-info";
+
+        const icon = document.createElement("i");
+        icon.className = item.icon;
+
+        const span = document.createElement("span");
+        span.textContent = item.content;
+
+        link.append(icon, span);
+        col.appendChild(link);
+      }
+    }
+  });
+
+  list.appendChild(col);
+  return list;
+}
+
+function createDefaultLayout(items) {
+  const container = document.createElement("div");
+  items.forEach((item) => {
+    const element = createElement(item);
+    if (element) container.appendChild(element);
+  });
+  return container;
+}
+
+function createResumeModal() {
+  const modal = document.createElement("div");
+  modal.className = "modal fade";
+  modal.id = "resumeModal";
+  modal.tabIndex = -1;
+
+  modal.innerHTML = `
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Resume</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <iframe id="resume-preview" width="100%" height="600px"></iframe>
+        </div>
+        <div class="modal-footer">
+          <a id="resume-download" href="#" class="btn btn-primary" download>
+            <i class="fas fa-download me-2"></i>Download PDF
+          </a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
