@@ -286,8 +286,6 @@ Usage in data.json:
 }
 ```
 
-### Advanced Customization
-
 #### Theme Support
 
 Add theme-specific assets in your data:
@@ -312,17 +310,6 @@ Built-in animations include:
 - Theme transition effects
 - Image swap animations
 
-#### Performance Features
-
-- Dynamic CSS/JS loading
-- Layout-specific code splitting
-- Lazy loading of assets
-
-## Dependencies
-
-- Bootstrap 5.3.2 (CSS & JS)
-- Font Awesome 6.0.0
-- Google Fonts (Space Mono)
 
 ## Browser Support
 
